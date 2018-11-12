@@ -1,0 +1,36 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           python 1.0
+
+version             __version__
+revision            0
+name                py-plumed
+categories          science
+
+platforms           darwin
+categories-append   science
+license             GPL-3
+maintainers         {gmail.com:giovanni.bussi @GiovanniBussi} openmaintainer
+
+description         xx
+long_description    xx
+
+fetch.type          git
+git.url             __root__
+git.branch          ${version}
+
+python.versions     27 36 37
+
+if {${name} ne ${subport}} {
+
+    depends_build-append port:py${python.version}-setuptools_scm \
+                         port:py${python.version}-setuptools_scm_git_archive
+
+    depends_lib-append   path:${prefix}/lib/libplumedKernel.dylib:plumed
+
+    depends_test-append port:py${python.version}-nose
+    test.run            yes
+}
+
+

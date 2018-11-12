@@ -3,6 +3,7 @@ cache:
   - ccache
   - directories:
     - $HOME/.ccache
+    - $HOME/.macports-ci-ccache
   - pip
 matrix:
   include:
@@ -20,24 +21,43 @@ matrix:
     python: 3.6
   - os: osx
     language: generic
+  - os: osx
+    env: USE_MACPORTS=27
+  - os: osx
+    env: USE_MACPORTS=36
 before_install:
   - export SOEXT=so
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then
       brew update > /dev/null ;
       brew install ccache ;
       SOEXT=dylib ;
-      PATH="/usr/local/share/python/:$PATH" ;
     fi
-  - ccache -s
 # version=master or version=f123f12f3 to select a specific version
-  - CXX="ccache g++" .travis/install.plumed version=master
-  - ccache -s
-  - pip install numpy cython
-  - pip install nose
-
+  - if [[ -z "$USE_MACPORTS" ]] ; then
+       ccache -s ;
+       CXX="ccache g++" .travis/install.plumed version=master;
+       ccache -s ;
+       pip install numpy cython ;
+       pip install nose ;
+    else
+       curl -LO https://raw.githubusercontent.com/GiovanniBussi/macports-ci/master/macports-ci ;
+       source ./macports-ci install ;
+       source macports-ci ccache ;
+       sudo port -N install plumed-dev ;
+    fi
 install:
-  - pip install -e .
-
+  - if [[ -z "$USE_MACPORTS" ]] ; then
+      pip install . ;
+    else
+      .travis/portfile.sh
+      source macports-ci localports macports
+      sudo port -N -k install py${USE_MACPORTS}-plumed
+    fi
 script:
-  - export PLUMED_KERNEL=$HOME/opt/lib/libplumedKernel.$SOEXT
-  - nosetests -v
+  - if [[ -z "$USE_MACPORTS" ]] ; then
+      export PLUMED_KERNEL=$HOME/opt/lib/libplumedKernel.$SOEXT
+      nosetests -v
+    else
+      sudo port -N -d test $PLUMED_MACPORTS
+    fi
+  
