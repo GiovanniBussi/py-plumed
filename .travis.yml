@@ -1,4 +1,6 @@
-dist: trusty
+dist:
+  - trusty
+  - xenial
 language: python
 cache:
   - ccache
@@ -17,11 +19,11 @@ before_install:
   - CXX="ccache g++" .travis/install.plumed version=master
   - ccache -s
   - pip install numpy cython
-  - pip install nose coverage
+  - pip install nose
 
 install:
   - pip install -e .
 
 script:
   - export PLUMED_KERNEL=$HOME/opt/lib/libplumedKernel.so
-  - nosetests --with-coverage -v 
+  - nosetests -v
