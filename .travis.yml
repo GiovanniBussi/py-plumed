@@ -3,41 +3,61 @@ cache:
   - ccache
   - directories:
     - $HOME/.ccache
+    - $HOME/.macports-ci-ccache
   - pip
 matrix:
   include:
   - dist: trusty
     python: 2.7
   - dist: trusty
-    python: 3.5
-  - dist: trusty
     python: 3.6
   - dist: xenial
     python: 2.7
   - dist: xenial
-    python: 3.5
-  - dist: xenial
     python: 3.6
+# not working yet:
+# - os: osx
+#   language: generic
   - os: osx
     language: generic
+    env: USE_MACPORTS=2.7
+  - os: osx
+    language: generic
+    env: USE_MACPORTS=3.7
 before_install:
   - export SOEXT=so
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then
+  - if [[ "$TRAVIS_OS_NAME" == "osx" && -z "$USE_MACPORTS" ]] ; then
       brew update > /dev/null ;
       brew install ccache ;
       SOEXT=dylib ;
-      PATH="/usr/local/share/python/:$PATH" ;
     fi
-  - ccache -s
 # version=master or version=f123f12f3 to select a specific version
-  - CXX="ccache g++" .travis/install.plumed version=master
-  - ccache -s
-  - pip install numpy cython
-  - pip install nose
-
+  - if [[ -z "$USE_MACPORTS" ]] ; then
+       ccache -s ;
+       CXX="ccache g++" .travis/install.plumed version=master;
+       ccache -s ;
+       pip install numpy cython ;
+       pip install nose ;
+    else
+       curl -LO https://raw.githubusercontent.com/GiovanniBussi/macports-ci/master/macports-ci ;
+       source ./macports-ci install ;
+       source macports-ci ccache ;
+       sudo port -N install plumed-devel ;
+       sudo port -N install py${USE_MACPORTS//./}-nose ;
+    fi
 install:
-  - pip install -e .
-
+  - if [[ -z "$USE_MACPORTS" ]] ; then
+      pip install . ;
+    else
+      .travis/portfile.sh ;
+      source macports-ci localports macports ;
+      sudo port -N install py${USE_MACPORTS//./}-plumed ;
+    fi
 script:
-  - export PLUMED_KERNEL=$HOME/opt/lib/libplumedKernel.$SOEXT
-  - nosetests -v
+  - if [[ -z "$USE_MACPORTS" ]] ; then
+      export PLUMED_KERNEL=$HOME/opt/lib/libplumedKernel.$SOEXT ;
+      nosetests -v ;
+    else
+      nosetests-${USE_MACPORTS} -v ;
+    fi
+  
