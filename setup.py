@@ -36,8 +36,11 @@ import os
 #       cdef extern from "plumed/wrapper/Plumed.h" :
 #   in cplumed.pxd more general
 
+extra_compile_args=['-D__PLUMED_HAS_DLOPEN','-D__PLUMED_WRAPPER_LINK_RUNTIME=1','-D__PLUMED_WRAPPER_CXX=1','-D__PLUMED_WRAPPER_IMPLEMENTATION=1','-D__PLUMED_WRAPPER_EXTERN=0']
+
 setup(
   name='plumed-py',
+  version='2.5',
   description='Python interface to PLUMED',
   author='Gareth A. Tribello',
   author_email='plumed-users@googlegroups.com',
@@ -45,9 +48,10 @@ setup(
   ext_modules = cythonize([
                   Extension( name="plumed",
                              sources=["plumed.pyx"],
-                             libraries=["plumedWrapper"],
                              language="c++",
-                             include_dirs=[numpy.get_include()]
+                             include_dirs=[".",numpy.get_include()],
+                             extra_compile_args=extra_compile_args
                            )
                           ])
 )
+

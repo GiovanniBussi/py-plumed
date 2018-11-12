@@ -1,0 +1,22 @@
+dist: trusty
+language: python
+cache: ccache
+python:
+  - "2.7"
+  - "3.5"
+  - "3.6"
+before_install:
+  - export PATH="$HOME/opt/bin:$PATH"
+  - export LD_LIBRARY_PATH="$HOME/opt/lib:$LD_LIBRARY_PATH"
+  - ccache -s
+# version=master or version=f123f12f3 to select a specific version
+  - CXX="ccache g++" .travis/install.plumed version=master
+  - ccache -s
+  - pip install numpy cython
+
+install:
+  - pip install -e .
+
+script:
+  - echo ok
+# should add something that makes the script fail when there are errors
