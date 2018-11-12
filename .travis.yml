@@ -21,8 +21,12 @@ matrix:
   - os: osx
     language: generic
 before_install:
-  - export PATH="$HOME/opt/bin:$PATH"
-  - export LD_LIBRARY_PATH="$HOME/opt/lib:$LD_LIBRARY_PATH"
+  - export SOEXT=so
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then
+      brew update > /dev/null ;
+      brew install ccache
+      SOEXT=dylib ;
+    fi
   - ccache -s
 # version=master or version=f123f12f3 to select a specific version
   - CXX="ccache g++" .travis/install.plumed version=master
@@ -34,7 +38,5 @@ install:
   - pip install -e .
 
 script:
-  - SOEXT=so
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then SOEXT=dylib ; fi
   - export PLUMED_KERNEL=$HOME/opt/lib/libplumedKernel.$SOEXT
   - nosetests -v
