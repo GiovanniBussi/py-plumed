@@ -1,7 +1,9 @@
 dist: trusty
 language: python
 cache:
-  - ccache # does not work
+  - ccache
+  - directories:
+    - $HOME/.ccache
   - pip
 python:
   - "2.7"
