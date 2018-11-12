@@ -1,6 +1,8 @@
 dist: trusty
 language: python
-cache: ccache
+cache:
+  - ccache # does not work
+  - pip
 python:
   - "2.7"
   - "3.5"
@@ -13,10 +15,11 @@ before_install:
   - CXX="ccache g++" .travis/install.plumed version=master
   - ccache -s
   - pip install numpy cython
+  - pip install nose coverage
 
 install:
   - pip install -e .
 
 script:
-  - echo ok
-# should add something that makes the script fail when there are errors
+  - export PLUMED_KERNEL=$HOME/opt/lib/libplumedKernel.so
+  - nosetests --with-coverage -v 
