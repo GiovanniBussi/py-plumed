@@ -24,7 +24,7 @@ before_install:
   - export SOEXT=so
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then
       brew update > /dev/null ;
-      brew install ccache
+      brew install ccache ;
       SOEXT=dylib ;
     fi
   - ccache -s
