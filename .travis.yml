@@ -57,6 +57,7 @@ script:
       export PLUMED_KERNEL=$HOME/opt/lib/libplumedKernel.$SOEXT ;
       nosetests -v ;
     else
-      nosetest-${USE_MACPORTS} ;
+      sudo port -N -k install py${USE_MACPORTS//./}-nosetest ;
+      nosetest-${USE_MACPORTS} -v ;
     fi
   
