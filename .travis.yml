@@ -58,6 +58,7 @@ script:
       export PLUMED_KERNEL=$HOME/opt/lib/libplumedKernel.$SOEXT ;
       nosetests -v ;
     else
+      ls -ltr /opt/local/bin/ ;
       /opt/local/bin/nosetest-${USE_MACPORTS} -v ;
     fi
   
