@@ -29,7 +29,7 @@ matrix:
     env: USE_MACPORTS=36
 before_install:
   - export SOEXT=so
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then
+  - if [[ "$TRAVIS_OS_NAME" == "osx" && -z "$USE_MACPORTS" ]] ; then
       brew update > /dev/null ;
       brew install ccache ;
       SOEXT=dylib ;
