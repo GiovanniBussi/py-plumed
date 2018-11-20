@@ -73,6 +73,7 @@ setup(
   author='Gareth A. Tribello',
   author_email='plumed-users@googlegroups.com',
   url='http://www.plumed.org',
+  zip_safe= False,
   ext_modules = cythonize([
                   Extension( name=plumedname,
                              sources=["plumed.pyx"],
