@@ -43,6 +43,7 @@ before_install:
        source ./macports-ci install ;
        source macports-ci ccache ;
        sudo port -N install plumed-devel ;
+       sudo port -N install py${USE_MACPORTS//./}-nose ;
     fi
 install:
   - if [[ -z "$USE_MACPORTS" ]] ; then
@@ -50,14 +51,13 @@ install:
     else
       .travis/portfile.sh ;
       source macports-ci localports macports ;
-      sudo port -N -k install py${USE_MACPORTS//./}-plumed ;
+      sudo port -N install py${USE_MACPORTS//./}-plumed ;
     fi
 script:
   - if [[ -z "$USE_MACPORTS" ]] ; then
       export PLUMED_KERNEL=$HOME/opt/lib/libplumedKernel.$SOEXT ;
       nosetests -v ;
     else
-      sudo port -N -k install py${USE_MACPORTS//./}-nose ;
       nosetest-${USE_MACPORTS} -v ;
     fi
   
