@@ -53,7 +53,7 @@ install:
     else
       .travis/portfile.sh ;
       source macports-ci localports macports ;
-      sudo port -N -k install py${USE_MACPORTS}-plumed ;
+      sudo port -N -d -k install py${USE_MACPORTS}-plumed ;
     fi
 script:
   - if [[ -z "$USE_MACPORTS" ]] ; then
