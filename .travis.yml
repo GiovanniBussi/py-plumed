@@ -22,8 +22,10 @@ matrix:
   - os: osx
     language: generic
   - os: osx
+    language: generic
     env: USE_MACPORTS=27
   - os: osx
+    language: generic
     env: USE_MACPORTS=36
 before_install:
   - export SOEXT=so
