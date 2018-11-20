@@ -49,15 +49,15 @@ install:
   - if [[ -z "$USE_MACPORTS" ]] ; then
       pip install . ;
     else
-      .travis/portfile.sh
-      source macports-ci localports macports
-      sudo port -N -k install py${USE_MACPORTS}-plumed
+      .travis/portfile.sh ;
+      source macports-ci localports macports ;
+      sudo port -N -k install py${USE_MACPORTS}-plumed ;
     fi
 script:
   - if [[ -z "$USE_MACPORTS" ]] ; then
-      export PLUMED_KERNEL=$HOME/opt/lib/libplumedKernel.$SOEXT
-      nosetests -v
+      export PLUMED_KERNEL=$HOME/opt/lib/libplumedKernel.$SOEXT ;
+      nosetests -v ;
     else
-      sudo port -N -d test $PLUMED_MACPORTS
+      sudo port -N -d test $PLUMED_MACPORTS ;
     fi
   
