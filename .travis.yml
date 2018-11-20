@@ -10,23 +10,20 @@ matrix:
   - dist: trusty
     python: 2.7
   - dist: trusty
-    python: 3.5
-  - dist: trusty
     python: 3.6
   - dist: xenial
     python: 2.7
   - dist: xenial
-    python: 3.5
-  - dist: xenial
     python: 3.6
-  - os: osx
-    language: generic
+# not working yet:
+# - os: osx
+#   language: generic
   - os: osx
     language: generic
     env: USE_MACPORTS=27
   - os: osx
     language: generic
-    env: USE_MACPORTS=36
+    env: USE_MACPORTS=37
 before_install:
   - export SOEXT=so
   - if [[ "$TRAVIS_OS_NAME" == "osx" && -z "$USE_MACPORTS" ]] ; then
@@ -53,13 +50,13 @@ install:
     else
       .travis/portfile.sh ;
       source macports-ci localports macports ;
-      sudo port -N -d -k install py${USE_MACPORTS}-plumed ;
+      sudo port -N -k install py${USE_MACPORTS}-plumed ;
     fi
 script:
   - if [[ -z "$USE_MACPORTS" ]] ; then
       export PLUMED_KERNEL=$HOME/opt/lib/libplumedKernel.$SOEXT ;
       nosetests -v ;
     else
-      sudo port -N -d test $PLUMED_MACPORTS ;
+      sudo port -N -d test py${USE_MACPORTS}-plumed ;
     fi
   
